@@ -1,6 +1,10 @@
 buildscript {
     ext {
         compose_version = '1.1.1'
+        retrofit_version = '2.9.0'
+        http_version = '4.9.2'
+        hilt_version = '2.41'
+        hilt_compose_version = '1.0.0'
     }
 }// Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {

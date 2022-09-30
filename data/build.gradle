@@ -18,6 +18,9 @@ android {
     }
 
     buildTypes {
+        all {
+            buildConfigField("String", "BASE_URL", "\"https://itunes.apple.com/search?\"")
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
@@ -34,6 +37,23 @@ android {
 
 dependencies {
     implementation 'androidx.core:core-ktx:1.7.0'
+
+    // Hilt DI
+    implementation "com.google.dagger:hilt-android:$hilt_version"
+    implementation "androidx.hilt:hilt-navigation-compose:$hilt_compose_version"
+    implementation project(path: ':domain')
+    kapt "com.google.dagger:hilt-compiler:$hilt_version"
+    androidTestImplementation "com.google.dagger:hilt-android-testing:$hilt_version"
+    kaptAndroidTest "com.google.dagger:hilt-compiler:$hilt_version"
+
+    // Retrofit
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-moshi:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+
+    // OkHttp
+    implementation "com.squareup.okhttp3:logging-interceptor:$http_version"
+    implementation "com.squareup.okhttp3:okhttp:$http_version"
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
