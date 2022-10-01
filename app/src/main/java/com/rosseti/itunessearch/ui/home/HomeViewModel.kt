@@ -1,10 +1,11 @@
 package com.rosseti.itunessearch.ui.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rosseti.domain.Resource
 import com.rosseti.domain.entity.ITunesEntity
-import com.rosseti.domain.usecase.GetSongByNameUseCase
+import com.rosseti.domain.usecase.GetSongBySearchUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -12,7 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val getSongByNameUseCase: GetSongByNameUseCase,
+    private val getSongBySearchUseCase: GetSongBySearchUseCase,
 ) :
     ViewModel() {
 
@@ -27,8 +28,11 @@ class HomeViewModel @Inject constructor(
 
 
     fun fetchSongs(name: String) {
+        Log.i("Repository", "name: $name")
         viewModelScope.launch {
-            getSongByNameUseCase(name.replace(" ", "+")).collect { resource ->
+            val search = "$name".replace(" ", "+")
+            getSongBySearchUseCase(search).collect { resource ->
+                Log.i("Repository", "resource: $resource")
                 when (resource.status) {
                     Resource.Status.LOADING -> {
                         homeAction.value = HomeAction.Loading

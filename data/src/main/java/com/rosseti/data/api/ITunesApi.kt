@@ -2,10 +2,10 @@ package com.rosseti.data.api
 
 import com.rosseti.data.model.ITunesResponse
 import retrofit2.http.GET
-import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface ITunesApi {
 
-    @GET(value = "/search?term={name}")
-    suspend fun fetchSongByName(@Path("name") userId: String): ITunesResponse
+    @GET(value = "/search")
+    suspend fun fetchSongByName(@Query("term") search: String): ITunesResponse
 }
