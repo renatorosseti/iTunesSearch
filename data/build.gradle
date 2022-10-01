@@ -19,7 +19,7 @@ android {
 
     buildTypes {
         all {
-            buildConfigField("String", "BASE_URL", "\"https://itunes.apple.com/search?\"")
+            buildConfigField("String", "BASE_URL", "\"https://itunes.apple.com\"")
         }
         release {
             minifyEnabled false

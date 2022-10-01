@@ -11,6 +11,7 @@ class ITunesRepositoryImpl @Inject constructor(private val api: ITunesApi) : ITu
             ITunesEntity(
                 artistName = it.artistName,
                 artistViewUrl = it.artistViewUrl,
+                collectionArtistViewUrl = it.collectionArtistViewUrl,
                 collectionName = it.collectionName,
                 longDescription = it.longDescription,
                 shortDescription = it.shortDescription,

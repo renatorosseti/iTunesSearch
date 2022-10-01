@@ -6,6 +6,6 @@ import retrofit2.http.Path
 
 interface ITunesApi {
 
-    @GET(value = "users/{name}")
+    @GET(value = "/search?term={name}")
     suspend fun fetchSongByName(@Path("name") userId: String): ITunesResponse
 }

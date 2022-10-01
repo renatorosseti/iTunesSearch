@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 class GetSongByNameUseCase @Inject constructor(private val repository: ITunesRepository) {
+
     operator fun invoke(name: String): Flow<Resource<List<ITunesEntity>>> =
         flow { emit(repository.fetchSongByName(name)) }
             .map { Resource.success(it) }
