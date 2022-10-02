@@ -32,7 +32,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             val search = "$name".replace(" ", "+")
             getSongBySearchUseCase(search).collect { resource ->
-                Log.i("Repository", "resource: $resource")
+                Log.i("Repository", "Data: ${resource.data}")
                 when (resource.status) {
                     Resource.Status.LOADING -> {
                         homeAction.value = HomeAction.Loading

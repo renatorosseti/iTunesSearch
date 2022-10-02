@@ -171,7 +171,7 @@ fun SongRow(
             Row {
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
-                        .data(song.artistName)
+                        .data(song.artistViewUrl)
                         .crossfade(true)
                         .build(),
                     placeholder = painterResource(R.drawable.ic_launcher_foreground),
@@ -189,7 +189,7 @@ fun SongRow(
                         .align(Alignment.CenterVertically)
                 ) {
                     Text(
-                        text = song.artistName,
+                        text = song.artistName ?: "",
                         color = Color.White
                     )
                 }

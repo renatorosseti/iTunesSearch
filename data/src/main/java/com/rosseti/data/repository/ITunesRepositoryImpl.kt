@@ -9,11 +9,10 @@ import javax.inject.Inject
 class ITunesRepositoryImpl @Inject constructor(private val api: ITunesApi) : ITunesRepository {
     override suspend fun fetchSongByName(name: String): List<ITunesEntity> =
         api.fetchSongByName(name).results.map {
-            Log.i("Repository", "Response: $it")
+            Log.i("ITunesRepositoryImpl", "Response: $it")
             ITunesEntity(
                 artistName = it.artistName,
                 artistViewUrl = it.artistViewUrl,
-                collectionArtistViewUrl = it.collectionArtistViewUrl,
                 collectionName = it.collectionName,
                 longDescription = it.longDescription,
                 shortDescription = it.shortDescription,
