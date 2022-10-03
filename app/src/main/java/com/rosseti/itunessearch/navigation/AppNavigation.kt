@@ -22,12 +22,13 @@ fun AppNavigation() {
     ) {
         composable(AppScreens.MainScreen.name) {
             val viewModel: HomeViewModel = hiltViewModel()
-            HomeScreen(navController = navController, viewModel = viewModel)
+            val search = it.savedStateHandle?.get<String>("search")
+            HomeScreen(navController = navController, viewModel = viewModel, search ?: "")
         }
         composable(AppScreens.DetailsScreen.name) {
             val entity = navController.previousBackStackEntry?.savedStateHandle?.get<ITunesEntity>("song")
-            Log.i("DetailsScreen", "Entity $entity")
-            DetailsScreen(navController = navController, entity ?: ITunesEntity())
+            val search = navController.previousBackStackEntry?.savedStateHandle?.get<String>("search")
+            DetailsScreen(navController = navController, entity ?: ITunesEntity(), search ?: "")
         }
     }
 }

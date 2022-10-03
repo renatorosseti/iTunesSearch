@@ -20,15 +20,15 @@ class HomeViewModel @Inject constructor(
     sealed class HomeAction {
         object Loading : HomeAction()
         object Error : HomeAction()
+        object Empty : HomeAction()
         data class Successful(val data: List<ITunesEntity>) : HomeAction()
     }
 
-    private val homeAction = MutableStateFlow<HomeAction>(HomeAction.Loading)
+    private val homeAction = MutableStateFlow<HomeAction>(HomeAction.Empty)
     val homeState = homeAction.asStateFlow()
 
 
     fun fetchSongs(name: String) {
-        Log.i("Repository", "name: $name")
         viewModelScope.launch {
             val search = "$name".replace(" ", "+")
             getSongBySearchUseCase(search).collect { resource ->
@@ -38,7 +38,9 @@ class HomeViewModel @Inject constructor(
                         homeAction.value = HomeAction.Loading
                     }
                     Resource.Status.SUCCESS -> {
-                        if (resource.data != null) {
+                        if (resource.data.isNullOrEmpty()) {
+                            homeAction.value = HomeAction.Empty
+                        } else {
                             homeAction.value = HomeAction.Successful(resource.data ?: listOf())
                         }
                     }

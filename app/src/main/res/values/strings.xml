@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">iTunesSearch</string>
+    <string name="app_name">iTunes</string>
+    <string name="error_title">Error</string>
+    <string name="error_subtitle">Oops, something went wrong. Please try again later</string>
+    <string name="empty_list_title">Empty list</string>
+    <string name="empty_list_subtitle">Your song list is empty</string>
 </resources>

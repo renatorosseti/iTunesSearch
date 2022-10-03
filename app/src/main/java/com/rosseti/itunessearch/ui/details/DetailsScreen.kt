@@ -1,14 +1,16 @@
 package com.rosseti.itunessearch.ui.details
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
@@ -23,8 +25,10 @@ import com.rosseti.itunessearch.R
 @Composable
 fun DetailsScreen(
     navController: NavController,
-    song: ITunesEntity
+    song: ITunesEntity,
+    searchText: String
 ) {
+    Log.i("HomeScreen", "Search details: $searchText")
     val uriHandler = LocalUriHandler.current
     Scaffold(topBar = {
         TopAppBar(
@@ -38,6 +42,7 @@ fun DetailsScreen(
                 Icon(imageVector = Icons.Default.ArrowBack, contentDescription = null,
                     tint = MaterialTheme.colors.secondary,
                     modifier = Modifier.clickable {
+                        navController.previousBackStackEntry?.savedStateHandle?.set("search", searchText)
                         navController.popBackStack()
                     })
             }
@@ -50,7 +55,10 @@ fun DetailsScreen(
                 .fillMaxHeight()
                 .background(MaterialTheme.colors.primary)
         ) {
-            Column(Modifier.padding(16.dp)) {
+            Column(
+                Modifier
+                    .padding(16.dp)
+                    .verticalScroll(rememberScrollState())) {
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
                         .data(song.artworkUrl100)

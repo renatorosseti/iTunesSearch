@@ -5,6 +5,7 @@ buildscript {
         http_version = '4.9.2'
         hilt_version = '2.41'
         hilt_compose_version = '1.0.0'
+        mockk_version = '1.10.0'
     }
 }// Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {

@@ -1,5 +1,6 @@
 package com.rosseti.itunessearch.ui.home
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
@@ -21,6 +22,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -31,13 +33,15 @@ import coil.request.ImageRequest
 import com.rosseti.domain.entity.ITunesEntity
 import com.rosseti.itunessearch.R
 import com.rosseti.itunessearch.navigation.AppScreens
+import com.rosseti.itunessearch.ui.utils.Utils
 
 @Composable
 fun HomeScreen(
     navController: NavController,
-    viewModel: HomeViewModel = hiltViewModel()
+    viewModel: HomeViewModel = hiltViewModel(),
+    searchText: String
 ) {
-    val textState = remember { mutableStateOf(TextFieldValue("")) }
+    val searchState = remember { mutableStateOf(TextFieldValue(searchText)) }
 
     Scaffold(topBar = {
         TopAppBar(
@@ -55,15 +59,23 @@ fun HomeScreen(
             color = MaterialTheme.colors.primary
         ) {
             Column {
-                SearchView(textState, viewModel = viewModel)
-                SoundList(navController = navController, viewModel = viewModel)
+                SearchView(searchState, viewModel = viewModel)
+                SoundList(
+                    searchState = searchState,
+                    navController = navController,
+                    viewModel = viewModel
+                )
             }
         }
     }
 }
 
 @Composable
-fun SoundList(navController: NavController, viewModel: HomeViewModel) {
+fun SoundList(
+    searchState: MutableState<TextFieldValue>,
+    navController: NavController,
+    viewModel: HomeViewModel
+) {
     when (val homeAction = viewModel.homeState.collectAsState().value) {
         is HomeViewModel.HomeAction.Successful -> {
             val list = homeAction.data
@@ -74,6 +86,7 @@ fun SoundList(navController: NavController, viewModel: HomeViewModel) {
             ) {
                 items(list) {
                     SongRow(
+                        searchState = searchState,
                         song = it,
                         navController = navController,
                     )
@@ -81,6 +94,16 @@ fun SoundList(navController: NavController, viewModel: HomeViewModel) {
             }
         }
         is HomeViewModel.HomeAction.Error -> {
+            ShowHomeInfoMessage(
+                title = stringResource(R.string.error_title),
+                subtitle = stringResource(R.string.error_subtitle)
+            )
+        }
+        is HomeViewModel.HomeAction.Empty -> {
+            ShowHomeInfoMessage(
+                title = stringResource(R.string.empty_list_title),
+                subtitle = stringResource(R.string.empty_list_subtitle)
+            )
         }
         is HomeViewModel.HomeAction.Loading -> {
             Column(
@@ -88,7 +111,9 @@ fun SoundList(navController: NavController, viewModel: HomeViewModel) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                CircularProgressIndicator()
+                CircularProgressIndicator(
+                    color = MaterialTheme.colors.primaryVariant
+                )
             }
         }
     }
@@ -110,7 +135,7 @@ fun SearchView(state: MutableState<TextFieldValue>, viewModel: HomeViewModel) {
                 Icons.Default.Search,
                 contentDescription = "",
                 modifier = Modifier
-                    .padding(15.dp)
+                    .padding(16.dp)
                     .size(24.dp)
             )
         },
@@ -118,15 +143,16 @@ fun SearchView(state: MutableState<TextFieldValue>, viewModel: HomeViewModel) {
             if (state.value != TextFieldValue("")) {
                 IconButton(
                     onClick = {
-                        state.value =
-                            TextFieldValue("") // Remove text from TextField when you press the 'X' icon
+                        // Remove text from TextField when you press the 'X' icon
+                        state.value = TextFieldValue("")
+                        viewModel.fetchSongs(state.value.text)
                     }
                 ) {
                     Icon(
                         Icons.Default.Close,
                         contentDescription = "",
                         modifier = Modifier
-                            .padding(15.dp)
+                            .padding(16.dp)
                             .size(24.dp)
                     )
                 }
@@ -147,35 +173,33 @@ fun SearchView(state: MutableState<TextFieldValue>, viewModel: HomeViewModel) {
     )
 }
 
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SongRow(
+    searchState: MutableState<TextFieldValue>,
     song: ITunesEntity,
     navController: NavController,
 ) {
     Surface(
         modifier = Modifier
             .padding(4.dp)
-            .fillMaxWidth(),
-        color = MaterialTheme.colors.primary
+            .fillMaxWidth()
     ) {
         Card(
             elevation = 2.dp,
             shape = MaterialTheme.shapes.medium,
-            backgroundColor = MaterialTheme.colors.primary,
             modifier = Modifier
-                .padding(horizontal = 16.dp, vertical = 8.dp)
-                .height(100.dp)
+                .padding(8.dp)
+                .requiredHeightIn(min = 120.dp, max = 400.dp)
                 .fillMaxWidth()
                 .combinedClickable(
                     onClick = {
-                        navController.currentBackStackEntry?.savedStateHandle?.set("song", song)
+                        setStateHandle(navController, song, searchState)
                         navController.navigate(route = AppScreens.DetailsScreen.name)
                     },
                 ),
         ) {
-            Row(Modifier.padding(8.dp)) {
+            Row(Modifier.padding(16.dp)) {
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
                         .data(song.artworkUrl100)
@@ -189,22 +213,88 @@ fun SongRow(
                         .clip(CircleShape)
                         .align(Alignment.CenterVertically)
                 )
-                Column(
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .fillMaxWidth()
-                        .align(Alignment.CenterVertically)
-                ) {
-                    Text(
-                        text = song.artistName,
-                        color = MaterialTheme.colors.secondary
-                    )
-                    Text(
-                        text = song.collectionName,
-                        color = MaterialTheme.colors.secondary
-                    )
+                Column {
+                    Row(
+                        modifier = Modifier
+                            .padding(start = 8.dp, top = 4.dp)
+                            .fillMaxWidth()
+                    ) {
+                        Text(
+                            text = "Artist:",
+                            color = MaterialTheme.colors.secondary
+                        )
+                        Text(
+                            text = song.artistName,
+                            color = MaterialTheme.colors.secondary,
+                            modifier = Modifier.padding(start = 8.dp)
+                        )
+                    }
+                    Row(
+                        modifier = Modifier
+                            .padding(start = 8.dp, top = 4.dp)
+                            .fillMaxWidth()
+                    ) {
+                        Text(
+                            text = "Collection:",
+                            color = MaterialTheme.colors.secondary
+                        )
+                        Text(
+                            text = song.collectionName,
+                            color = MaterialTheme.colors.secondary,
+                            modifier = Modifier.padding(start = 8.dp)
+                        )
+                    }
+                    Row(
+                        modifier = Modifier
+                            .padding(start = 8.dp, top = 4.dp)
+                            .fillMaxWidth()
+                    ) {
+                        Text(
+                            text = "Track:",
+                            color = MaterialTheme.colors.secondary
+                        )
+                        Text(
+                            text = song.trackName,
+                            color = MaterialTheme.colors.secondary,
+                            modifier = Modifier.padding(start = 8.dp)
+                        )
+                    }
                 }
             }
         }
+    }
+}
+
+private fun setStateHandle(
+    navController: NavController,
+    song: ITunesEntity,
+    searchState: MutableState<TextFieldValue>
+) {
+    navController.currentBackStackEntry?.savedStateHandle?.set(
+        Utils.SONG_KEY,
+        song
+    )
+    navController.currentBackStackEntry?.savedStateHandle?.set(
+        Utils.SEARCH_TEXT_KEY,
+        searchState.value.text
+    )
+}
+
+@Composable
+fun ShowHomeInfoMessage(title: String, subtitle: String) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = title,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colors.secondary
+        )
+        Text(
+            text = subtitle,
+            color = MaterialTheme.colors.secondary
+        )
     }
 }
