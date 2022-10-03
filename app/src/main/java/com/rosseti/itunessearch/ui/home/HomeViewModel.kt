@@ -28,9 +28,8 @@ class HomeViewModel @Inject constructor(
     val homeState = homeAction.asStateFlow()
 
 
-    fun fetchSongs(name: String) {
+    fun fetchSongs(search: String) {
         viewModelScope.launch {
-            val search = "$name".replace(" ", "+")
             getSongBySearchUseCase(search).collect { resource ->
                 Log.i("Repository", "Data: ${resource.data}")
                 when (resource.status) {

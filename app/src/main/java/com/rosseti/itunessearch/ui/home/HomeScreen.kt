@@ -81,8 +81,7 @@ fun SoundList(
             val list = homeAction.data
             LazyColumn(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight()
+                    .fillMaxSize()
             ) {
                 items(list) {
                     SongRow(
