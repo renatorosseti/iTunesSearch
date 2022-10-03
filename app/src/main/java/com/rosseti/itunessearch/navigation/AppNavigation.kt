@@ -1,17 +1,16 @@
 package com.rosseti.itunessearch.navigation
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavBackStackEntry
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
+import com.rosseti.domain.entity.ITunesEntity
+import com.rosseti.itunessearch.ui.details.DetailsScreen
 import com.rosseti.itunessearch.ui.home.HomeScreen
 import com.rosseti.itunessearch.ui.home.HomeViewModel
-
 
 @ExperimentalComposeUiApi
 @Composable
@@ -26,15 +25,9 @@ fun AppNavigation() {
             HomeScreen(navController = navController, viewModel = viewModel)
         }
         composable(AppScreens.DetailsScreen.name) {
-
-        }
-        composable(
-            AppScreens.DetailsScreen.name + "/{userId}",
-            arguments = listOf(navArgument("userId") { type = NavType.StringType })
-        ) { backStackEntry ->
-
+            val entity = navController.previousBackStackEntry?.savedStateHandle?.get<ITunesEntity>("song")
+            Log.i("DetailsScreen", "Entity $entity")
+            DetailsScreen(navController = navController, entity ?: ITunesEntity())
         }
     }
 }
-
-fun NavBackStackEntry.getString(value: String) = this.arguments?.getString(value) ?: ""

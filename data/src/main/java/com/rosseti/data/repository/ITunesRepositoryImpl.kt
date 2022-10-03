@@ -11,11 +11,11 @@ class ITunesRepositoryImpl @Inject constructor(private val api: ITunesApi) : ITu
         api.fetchSongByName(name).results.map {
             Log.i("ITunesRepositoryImpl", "Response: $it")
             ITunesEntity(
-                artistName = it.artistName,
-                artistViewUrl = it.artistViewUrl,
-                collectionName = it.collectionName,
-                longDescription = it.longDescription,
-                shortDescription = it.shortDescription,
+                artistName = it.artistName ?: "",
+                artistViewUrl = it.artistViewUrl ?: "",
+                collectionName = it.collectionName ?: "",
+                longDescription = it.longDescription ?: "",
+                shortDescription = it.shortDescription ?: "",
             )
         }
 }

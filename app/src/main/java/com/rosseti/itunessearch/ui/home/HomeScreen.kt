@@ -1,5 +1,6 @@
 package com.rosseti.itunessearch.ui.home
 
+import android.os.Bundle
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
@@ -27,8 +28,10 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.os.bundleOf
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.rosseti.domain.entity.ITunesEntity
@@ -77,7 +80,8 @@ fun SoundList(navController: NavController, viewModel: HomeViewModel) {
                 }
             }
         }
-        is HomeViewModel.HomeAction.Error -> {}
+        is HomeViewModel.HomeAction.Error -> {
+        }
         is HomeViewModel.HomeAction.Loading -> {
             CircularProgressIndicator(
                 Modifier
@@ -164,7 +168,8 @@ fun SongRow(
                 .fillMaxWidth()
                 .combinedClickable(
                     onClick = {
-                        navController.navigate(route = AppScreens.DetailsScreen.name + "/${song.artistName}")
+                        navController.currentBackStackEntry?.savedStateHandle?.set("song", song)
+                        navController.navigate(route = AppScreens.DetailsScreen.name)
                     },
                 ),
         ) {
