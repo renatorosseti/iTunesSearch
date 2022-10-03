@@ -1,5 +1,6 @@
 package com.rosseti.data.repository
 
+import android.os.Parcelable
 import android.util.Log
 import com.rosseti.data.api.ITunesApi
 import com.rosseti.domain.entity.ITunesEntity
@@ -13,9 +14,13 @@ class ITunesRepositoryImpl @Inject constructor(private val api: ITunesApi) : ITu
             ITunesEntity(
                 artistName = it.artistName ?: "",
                 artistViewUrl = it.artistViewUrl ?: "",
+                collectionViewUrl = it.collectionViewUrl ?: "",
+                trackViewUrl = it.trackViewUrl ?: "",
                 collectionName = it.collectionName ?: "",
+                trackName = it.trackName ?: "",
                 longDescription = it.longDescription ?: "",
                 shortDescription = it.shortDescription ?: "",
+                artworkUrl100 = it.artworkUrl100 ?: "",
             )
         }
 }

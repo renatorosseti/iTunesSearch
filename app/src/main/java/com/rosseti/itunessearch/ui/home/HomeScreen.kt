@@ -1,14 +1,11 @@
 package com.rosseti.itunessearch.ui.home
 
-import android.os.Bundle
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.CornerSize
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -21,17 +18,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.os.bundleOf
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.rosseti.domain.entity.ITunesEntity
@@ -48,14 +42,17 @@ fun HomeScreen(
     Scaffold(topBar = {
         TopAppBar(
             title = {
-                Text(text = stringResource(id = R.string.app_name))
+                Text(
+                    text = stringResource(id = R.string.app_name),
+                    color = MaterialTheme.colors.secondary
+                )
             },
+            backgroundColor = MaterialTheme.colors.primary
         )
     }) {
         Surface(
-            modifier = Modifier
-                .padding(5.dp)
-                .fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            color = MaterialTheme.colors.primary
         ) {
             Column {
                 SearchView(textState, viewModel = viewModel)
@@ -67,11 +64,14 @@ fun HomeScreen(
 
 @Composable
 fun SoundList(navController: NavController, viewModel: HomeViewModel) {
-    val homeAction = viewModel.homeState.collectAsState().value
-    when (homeAction) {
+    when (val homeAction = viewModel.homeState.collectAsState().value) {
         is HomeViewModel.HomeAction.Successful -> {
             val list = homeAction.data
-            LazyColumn {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight()
+            ) {
                 items(list) {
                     SongRow(
                         song = it,
@@ -83,12 +83,14 @@ fun SoundList(navController: NavController, viewModel: HomeViewModel) {
         is HomeViewModel.HomeAction.Error -> {
         }
         is HomeViewModel.HomeAction.Loading -> {
-            CircularProgressIndicator(
-                Modifier
-                    .padding(top = 180.dp)
-            )
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                CircularProgressIndicator()
+            }
         }
-
     }
 }
 
@@ -98,13 +100,11 @@ fun SearchView(state: MutableState<TextFieldValue>, viewModel: HomeViewModel) {
         value = state.value,
         onValueChange = { value ->
             state.value = value
-            if (value.text.isNotEmpty()) {
-                viewModel.fetchSongs(value.text)
-            }
+            viewModel.fetchSongs(value.text)
         },
         modifier = Modifier
             .fillMaxWidth(),
-        textStyle = TextStyle(color = Color.White, fontSize = 18.sp),
+        textStyle = TextStyle(color = MaterialTheme.colors.secondary, fontSize = 18.sp),
         leadingIcon = {
             Icon(
                 Icons.Default.Search,
@@ -133,13 +133,13 @@ fun SearchView(state: MutableState<TextFieldValue>, viewModel: HomeViewModel) {
             }
         },
         singleLine = true,
-        shape = RectangleShape, // The TextFiled has rounded corners top left and right by default
+        shape = RectangleShape,
         colors = TextFieldDefaults.textFieldColors(
-            textColor = Color.White,
-            cursorColor = Color.White,
-            leadingIconColor = Color.White,
-            trailingIconColor = Color.White,
-            backgroundColor = colorResource(id = R.color.purple_200),
+            textColor = MaterialTheme.colors.secondary,
+            cursorColor = MaterialTheme.colors.secondary,
+            leadingIconColor = MaterialTheme.colors.secondary,
+            trailingIconColor = MaterialTheme.colors.secondary,
+            backgroundColor = MaterialTheme.colors.primaryVariant,
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
             disabledIndicatorColor = Color.Transparent
@@ -155,13 +155,15 @@ fun SongRow(
     navController: NavController,
 ) {
     Surface(
-        Modifier
-            .padding(3.dp)
+        modifier = Modifier
+            .padding(4.dp)
             .fillMaxWidth(),
+        color = MaterialTheme.colors.primary
     ) {
         Card(
             elevation = 2.dp,
-            shape = RoundedCornerShape(corner = CornerSize(16.dp)),
+            shape = MaterialTheme.shapes.medium,
+            backgroundColor = MaterialTheme.colors.primary,
             modifier = Modifier
                 .padding(horizontal = 16.dp, vertical = 8.dp)
                 .height(100.dp)
@@ -173,10 +175,10 @@ fun SongRow(
                     },
                 ),
         ) {
-            Row {
+            Row(Modifier.padding(8.dp)) {
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
-                        .data(song.artistViewUrl)
+                        .data(song.artworkUrl100)
                         .crossfade(true)
                         .build(),
                     placeholder = painterResource(R.drawable.ic_launcher_foreground),
@@ -194,8 +196,12 @@ fun SongRow(
                         .align(Alignment.CenterVertically)
                 ) {
                     Text(
-                        text = song.artistName ?: "",
-                        color = Color.White
+                        text = song.artistName,
+                        color = MaterialTheme.colors.secondary
+                    )
+                    Text(
+                        text = song.collectionName,
+                        color = MaterialTheme.colors.secondary
                     )
                 }
             }
