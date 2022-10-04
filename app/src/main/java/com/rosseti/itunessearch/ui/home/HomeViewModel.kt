@@ -1,6 +1,5 @@
 package com.rosseti.itunessearch.ui.home
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rosseti.domain.Resource
@@ -28,10 +27,9 @@ class HomeViewModel @Inject constructor(
     val homeState = homeAction.asStateFlow()
 
 
-    fun fetchSongs(search: String) {
+    fun fetchSongs(query: String) {
         viewModelScope.launch {
-            getSongBySearchUseCase(search).collect { resource ->
-                Log.i("Repository", "Data: ${resource.data}")
+            getSongBySearchUseCase(query).collect { resource ->
                 when (resource.status) {
                     Resource.Status.LOADING -> {
                         homeAction.value = HomeAction.Loading

@@ -35,7 +35,7 @@ class GetSongSearchUseCaseTest {
         val response = listOf(ITunesEntity())
         val songQuery = "test"
 
-        coEvery { repository.fetchSongByName(songQuery) } returns response
+        coEvery { repository.fetchSongByQuery(songQuery) } returns response
         runBlocking {
             getSongBySearchUseCase(songQuery).collectIndexed { index, value ->
                 when (index) {
@@ -55,7 +55,7 @@ class GetSongSearchUseCaseTest {
     fun `When request getSongBySearchUseCase and returns error, emit IOException error`() {
         val songQuery = "test"
 
-        coEvery { repository.fetchSongByName(songQuery) } throws IOException("IO error")
+        coEvery { repository.fetchSongByQuery(songQuery) } throws IOException("IO error")
         runBlocking {
             getSongBySearchUseCase(songQuery).collectIndexed { index, value ->
                 when (index) {

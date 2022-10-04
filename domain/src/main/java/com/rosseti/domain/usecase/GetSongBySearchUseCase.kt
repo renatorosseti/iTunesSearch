@@ -9,8 +9,8 @@ import javax.inject.Inject
 
 class GetSongBySearchUseCase @Inject constructor(private val repository: ITunesRepository) {
 
-    operator fun invoke(name: String): Flow<Resource<List<ITunesEntity>>> =
-        flow { emit(repository.fetchSongByName(name)) }
+    operator fun invoke(query: String): Flow<Resource<List<ITunesEntity>>> =
+        flow { emit(repository.fetchSongByQuery(query)) }
             .map { Resource.success(it) }
             .onStart { emit(Resource.loading()) }
             .catch { emit(Resource.error(it)) }
