@@ -8,7 +8,7 @@ data class ITunesResponse(
 data class Result(
     val artistName: String?,
     val artistViewUrl: String?,
-    val artworkUrl100: String,
+    val artworkUrl100: String?,
     val collectionArtistName: String?,
     val collectionArtistViewUrl: String?,
     val collectionName: String?,

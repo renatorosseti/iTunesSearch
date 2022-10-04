@@ -4,4 +4,11 @@
     <string name="error_subtitle">Oops, something went wrong. Please try again later</string>
     <string name="empty_list_title">Empty list</string>
     <string name="empty_list_subtitle">Your song list is empty</string>
+    <string name="artist_details">Artist details</string>
+    <string name="collection_details">Collection details</string>
+    <string name="track_details">Track details</string>
+    <string name="artist">Artist:</string>
+    <string name="collection">Collection:</string>
+    <string name="genre">Genre:</string>
+    <string name="track">Track:</string>
 </resources>

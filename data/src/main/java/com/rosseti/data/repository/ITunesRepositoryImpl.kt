@@ -17,6 +17,7 @@ class ITunesRepositoryImpl @Inject constructor(private val api: ITunesApi) : ITu
                 trackViewUrl = it.trackViewUrl ?: "",
                 collectionName = it.collectionName ?: "",
                 trackName = it.trackName ?: "",
+                primaryGenreName = it.primaryGenreName ?: "",
                 longDescription = it.longDescription ?: "",
                 shortDescription = it.shortDescription ?: "",
                 artworkUrl100 = it.artworkUrl100 ?: "",

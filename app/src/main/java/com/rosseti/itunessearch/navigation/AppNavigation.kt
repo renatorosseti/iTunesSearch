@@ -11,6 +11,7 @@ import com.rosseti.domain.entity.ITunesEntity
 import com.rosseti.itunessearch.ui.details.DetailsScreen
 import com.rosseti.itunessearch.ui.home.HomeScreen
 import com.rosseti.itunessearch.ui.home.HomeViewModel
+import com.rosseti.itunessearch.ui.utils.Utils
 
 @ExperimentalComposeUiApi
 @Composable
@@ -22,12 +23,12 @@ fun AppNavigation() {
     ) {
         composable(AppScreens.MainScreen.name) {
             val viewModel: HomeViewModel = hiltViewModel()
-            val search = it.savedStateHandle?.get<String>("search")
+            val search = it.savedStateHandle?.get<String>(Utils.SEARCH_TEXT_KEY)
             HomeScreen(navController = navController, viewModel = viewModel, search ?: "")
         }
         composable(AppScreens.DetailsScreen.name) {
-            val entity = navController.previousBackStackEntry?.savedStateHandle?.get<ITunesEntity>("song")
-            val search = navController.previousBackStackEntry?.savedStateHandle?.get<String>("search")
+            val entity = navController.previousBackStackEntry?.savedStateHandle?.get<ITunesEntity>(Utils.SONG_KEY)
+            val search = navController.previousBackStackEntry?.savedStateHandle?.get<String>(Utils.SEARCH_TEXT_KEY)
             DetailsScreen(navController = navController, entity ?: ITunesEntity(), search ?: "")
         }
     }

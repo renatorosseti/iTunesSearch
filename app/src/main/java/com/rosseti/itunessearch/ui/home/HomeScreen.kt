@@ -5,7 +5,6 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -13,18 +12,14 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
@@ -32,6 +27,7 @@ import coil.request.ImageRequest
 import com.rosseti.domain.entity.ITunesEntity
 import com.rosseti.itunessearch.R
 import com.rosseti.itunessearch.navigation.AppScreens
+import com.rosseti.itunessearch.ui.theme.*
 import com.rosseti.itunessearch.ui.utils.Utils
 
 @Composable
@@ -46,7 +42,7 @@ fun HomeScreen(
         TopAppBar(
             title = {
                 Text(
-                    text = stringResource(id = R.string.app_name),
+                    text = stringResource(R.string.app_name),
                     color = MaterialTheme.colors.secondary
                 )
             },
@@ -127,14 +123,14 @@ fun SearchView(state: MutableState<TextFieldValue>, viewModel: HomeViewModel) {
         },
         modifier = Modifier
             .fillMaxWidth(),
-        textStyle = TextStyle(color = MaterialTheme.colors.secondary, fontSize = 18.sp),
+        textStyle = TextStyle(color = MaterialTheme.colors.secondary, fontSize = sizeMedium18sp),
         leadingIcon = {
             Icon(
                 Icons.Default.Search,
                 contentDescription = "",
                 modifier = Modifier
-                    .padding(16.dp)
-                    .size(24.dp)
+                    .padding(sizeSmall16dp)
+                    .size(sizeMedium24dp)
             )
         },
         trailingIcon = {
@@ -150,8 +146,8 @@ fun SearchView(state: MutableState<TextFieldValue>, viewModel: HomeViewModel) {
                         Icons.Default.Close,
                         contentDescription = "",
                         modifier = Modifier
-                            .padding(16.dp)
-                            .size(24.dp)
+                            .padding(sizeSmall16dp)
+                            .size(sizeMedium24dp)
                     )
                 }
             }
@@ -180,15 +176,15 @@ fun SongRow(
 ) {
     Surface(
         modifier = Modifier
-            .padding(4.dp)
+            .padding(sizeSmall4dp)
             .fillMaxWidth()
     ) {
         Card(
-            elevation = 2.dp,
+            elevation = sizeSmall2dp,
             shape = MaterialTheme.shapes.medium,
             modifier = Modifier
-                .padding(8.dp)
-                .requiredHeightIn(min = 120.dp, max = 400.dp)
+                .padding(sizeSmall8dp)
+                .requiredHeightIn(min = sizeLarge120dp, max = sizeLarge400dp)
                 .fillMaxWidth()
                 .combinedClickable(
                     onClick = {
@@ -197,7 +193,7 @@ fun SongRow(
                     },
                 ),
         ) {
-            Row(Modifier.padding(16.dp)) {
+            Row(Modifier.padding(sizeSmall16dp)) {
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
                         .data(song.artworkUrl100)
@@ -205,56 +201,56 @@ fun SongRow(
                         .build(),
                     placeholder = painterResource(R.drawable.ic_launcher_foreground),
                     contentDescription = stringResource(id = R.string.app_name),
-                    contentScale = ContentScale.Crop,
                     modifier = Modifier
-                        .size(90.dp)
-                        .clip(CircleShape)
+                        .size(sizeMedium90dp)
                         .align(Alignment.CenterVertically)
                 )
                 Column {
                     Row(
                         modifier = Modifier
-                            .padding(start = 8.dp, top = 4.dp)
+                            .padding(start = sizeSmall8dp, top = sizeSmall4dp)
                             .fillMaxWidth()
                     ) {
                         Text(
-                            text = "Artist:",
+                            text = stringResource(R.string.artist),
                             color = MaterialTheme.colors.secondary
                         )
                         Text(
                             text = song.artistName,
                             color = MaterialTheme.colors.secondary,
-                            modifier = Modifier.padding(start = 8.dp)
+                            modifier = Modifier.padding(start = sizeSmall8dp)
                         )
+                    }
+                    if (song.collectionName.isNotEmpty()) {
+                        Row(
+                            modifier = Modifier
+                                .padding(start = sizeSmall8dp, top = sizeSmall4dp)
+                                .fillMaxWidth()
+                        ) {
+                            Text(
+                                text = stringResource(R.string.collection),
+                                color = MaterialTheme.colors.secondary
+                            )
+                            Text(
+                                text = song.collectionName,
+                                color = MaterialTheme.colors.secondary,
+                                modifier = Modifier.padding(start = sizeSmall8dp)
+                            )
+                        }
                     }
                     Row(
                         modifier = Modifier
-                            .padding(start = 8.dp, top = 4.dp)
+                            .padding(start = sizeSmall8dp, top = sizeSmall4dp)
                             .fillMaxWidth()
                     ) {
                         Text(
-                            text = "Collection:",
-                            color = MaterialTheme.colors.secondary
-                        )
-                        Text(
-                            text = song.collectionName,
-                            color = MaterialTheme.colors.secondary,
-                            modifier = Modifier.padding(start = 8.dp)
-                        )
-                    }
-                    Row(
-                        modifier = Modifier
-                            .padding(start = 8.dp, top = 4.dp)
-                            .fillMaxWidth()
-                    ) {
-                        Text(
-                            text = "Track:",
+                            text = stringResource(R.string.track),
                             color = MaterialTheme.colors.secondary
                         )
                         Text(
                             text = song.trackName,
                             color = MaterialTheme.colors.secondary,
-                            modifier = Modifier.padding(start = 8.dp)
+                            modifier = Modifier.padding(start = sizeSmall8dp)
                         )
                     }
                 }

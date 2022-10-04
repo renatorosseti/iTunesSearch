@@ -11,6 +11,7 @@ data class ITunesEntity(
     val trackViewUrl: String = "",
     val collectionName: String = "",
     val trackName: String = "",
+    val primaryGenreName: String = "",
     val longDescription: String = "",
     val shortDescription: String = "",
     val artworkUrl100: String = ""
