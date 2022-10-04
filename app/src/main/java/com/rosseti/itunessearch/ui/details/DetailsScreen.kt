@@ -14,6 +14,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
@@ -146,6 +147,7 @@ fun DetailsScreen(
                         text = stringResource(R.string.artist_details),
                         color = MaterialTheme.colors.primaryVariant,
                         fontWeight = FontWeight.Bold,
+                        fontStyle = FontStyle.Italic,
                         modifier = Modifier
                             .padding(sizeSmall16dp)
                             .clickable {
@@ -158,6 +160,7 @@ fun DetailsScreen(
                         text = stringResource(R.string.track_details),
                         color = MaterialTheme.colors.primaryVariant,
                         fontWeight = FontWeight.Bold,
+                        fontStyle = FontStyle.Italic,
                         modifier = Modifier
                             .padding(sizeSmall16dp)
                             .clickable {
